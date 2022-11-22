@@ -90,7 +90,7 @@ func getQuary() {
 	long = strings.TrimSuffix(long, "\n")
 
 	// Отправляем запрос
-	endpoint := fmt.Sprintf("http://localhost:8080/search?query=%s", long)
+	endpoint := fmt.Sprintf("http://localhost:8080/snip?id=%s", long)
 	request, err := http.NewRequest(http.MethodGet, endpoint, nil)
 	if err != nil {
 		log.Fatalln(err)

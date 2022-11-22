@@ -1,10 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"url_reduce/internal/app"
 )
 
@@ -50,28 +50,25 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println(sett.Obj)
 
-	case "GET":
-		q := r.URL.Query().Get("id")
-		if q == "" {
-			http.Error(w, "The query parameter is missing", http.StatusBadRequest)
-			return
-		}
-		for _, v := range sett.Obj {
-			if q == v.ID {
-				w.Header().Set("Location", v.URL)
-				w.WriteHeader(307)
-				resp, err := json.Marshal(v)
-				if err != nil {
-					http.Error(w, err.Error(), 500)
-					return
-				}
-				w.Write(resp)
-				fmt.Println(r.Method, q)
-			}
-		}
-
 	default:
 		w.WriteHeader(400)
+	}
+}
+func GetHandler(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query().Get("id")
+	for _, v := range sett.Obj {
+		if q == v.ID {
+
+			url := strings.ReplaceAll(v.URL, "url=", "")
+			url = "https://" + url + "/"
+			fmt.Println(url)
+			w.WriteHeader(307)
+			//w.Header().Add("Location", "url")
+			w.Header().Set("Location", url)
+			http.Redirect(w, r, url, 307)
+			//w.WriteHeader(307)
+
+		}
 	}
 }
 
@@ -79,6 +76,7 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	//маршрутизация запросов обработчику
 	http.HandleFunc("/", BodyHandler)
+	http.HandleFunc("/snip", GetHandler)
 
 	//запуск сервера с адресом localhost, порт 8080
 	http.ListenAndServe(":8080", nil)
