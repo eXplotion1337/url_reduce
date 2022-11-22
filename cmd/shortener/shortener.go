@@ -34,8 +34,8 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "The query parameter is missing", http.StatusBadRequest)
 			return
 		}
-		fmt.Println(r.Method)
-		fmt.Println(q)
+		//fmt.Println(r.Method)
+		//fmt.Println(q)
 
 		value := app.JsonDecoder(q)
 		fmt.Println(value)

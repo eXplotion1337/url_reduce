@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -16,7 +15,7 @@ func Ramdomize(fullStr string) string {
 	shortStr := randSeq(6)
 	// составляем ID из 4 случаенный частей
 	id := randId(5) + "-" + randId(5) + "-" + randId(5) + "-" + randId(5)
-	fmt.Println(id)
+	//fmt.Println(id)
 	// записываем данные в Json
 	saveJson(fullStr, shortStr, id)
 	return shortStr
