@@ -65,7 +65,7 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(307)
 			//w.Header().Add("Location", "url")
 			w.Header().Set("Location", url)
-			http.Redirect(w, r, url, 307)
+			http.Redirect(w, r, url, http.StatusMovedPermanently)
 			//w.WriteHeader(307)
 
 		}
