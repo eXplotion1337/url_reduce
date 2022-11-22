@@ -12,7 +12,7 @@ import (
 func Ramdomize(fullStr string) string {
 
 	//rand.Seed(time.Now().UnixNano())
-	shortStr := randSeq(6)
+	shortStr := RandSeq(6)
 	// составляем ID из 4 случаенный частей
 	id := randID(5) + "-" + randID(5) + "-" + randID(5) + "-" + randID(5)
 	//fmt.Println(id)
@@ -24,7 +24,7 @@ func Ramdomize(fullStr string) string {
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 // Функция генерации сокращенной ссылки
-func randSeq(n int) string {
+func RandSeq(n int) string {
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
