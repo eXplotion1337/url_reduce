@@ -2,9 +2,9 @@ package app
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"math/rand"
+	"os"
 	"strings"
 )
 
@@ -14,10 +14,10 @@ func Ramdomize(fullStr string) string {
 	//rand.Seed(time.Now().UnixNano())
 	shortStr := randSeq(6)
 	// составляем ID из 4 случаенный частей
-	id := randId(5) + "-" + randId(5) + "-" + randId(5) + "-" + randId(5)
+	id := randID(5) + "-" + randID(5) + "-" + randID(5) + "-" + randID(5)
 	//fmt.Println(id)
 	// записываем данные в Json
-	saveJson(fullStr, shortStr, id)
+	saveJSON(fullStr, shortStr, id)
 	return shortStr
 }
 
@@ -35,7 +35,8 @@ func randSeq(n int) string {
 var count = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 // Функция генерации id
-func randId(n int) string {
+func randID(n int) string {
+
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = count[rand.Intn(len(letters))]
@@ -46,8 +47,8 @@ func randId(n int) string {
 const settingsFilename = "clientURLs.json"
 
 type URLs struct {
-	FullUrl string
-	ShorUrl string
+	FullURL string
+	ShorURL string
 	ID      string
 	//Date    string
 }
@@ -57,9 +58,9 @@ type Settings struct {
 }
 
 // Функция записи данных в JSON
-func saveJson(fullSrtToJson, shortStrToJson, id string) {
+func saveJSON(fullSrtToJSON, shortStrToJSON, id string) {
 	// Читаем файл
-	rawDataIn, err := ioutil.ReadFile(settingsFilename)
+	rawDataIn, err := os.ReadFile(settingsFilename)
 	if err != nil {
 		log.Fatal("Cannot load settings:", err)
 	}
@@ -71,8 +72,8 @@ func saveJson(fullSrtToJson, shortStrToJson, id string) {
 	}
 	// Записываем данные в структуру
 	newClient := URLs{
-		FullUrl: fullSrtToJson,
-		ShorUrl: shortStrToJson,
+		FullURL: fullSrtToJSON,
+		ShorURL: shortStrToJSON,
 		ID:      id,
 		//Date: string(time.Now()),
 	}
@@ -86,17 +87,17 @@ func saveJson(fullSrtToJson, shortStrToJson, id string) {
 	}
 
 	// записываем новые данные в JSON
-	err = ioutil.WriteFile(settingsFilename, rawDataOut, 0)
+	err = os.WriteFile(settingsFilename, rawDataOut, 0)
 	if err != nil {
 		log.Fatal("Cannot write updated settings file:", err)
 	}
 
 }
 
-// JsonDecoder Функция поска полной ссылки в JSON по ID
-func JsonDecoder(idUrlToResponse string) string {
+// JSONDecoder Функция поска полной ссылки в JSON по ID
+func JSONDecoder(idUrlToResponse string) string {
 	var urlToResponse string
-	rawDataIn, err := ioutil.ReadFile(settingsFilename)
+	rawDataIn, err := os.ReadFile(settingsFilename)
 	if err != nil {
 		log.Fatal("Cannot load settings:", err)
 	}
@@ -111,7 +112,7 @@ func JsonDecoder(idUrlToResponse string) string {
 	for _, v := range settings.URLs {
 		if v.ID == idUrlToResponse {
 			//fmt.Println(v.ID)
-			urlToResponse = strings.ReplaceAll(v.FullUrl, "url=", "")
+			urlToResponse = strings.ReplaceAll(v.FullURL, "url=", "")
 		}
 
 	}

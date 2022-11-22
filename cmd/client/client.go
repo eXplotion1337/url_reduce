@@ -69,8 +69,8 @@ func postQuary() {
 		os.Exit(1)
 	}
 	// и печатаем его
-	ShortUrl := string(body)
-	newLoad := strings.ReplaceAll(ShortUrl, "url=", "")
+	ShortURL := string(body)
+	newLoad := strings.ReplaceAll(ShortURL, "url=", "")
 	fmt.Println(newLoad)
 
 }
@@ -100,6 +100,7 @@ func getQuary() {
 	request.Header.Add("Location", "string")
 	client := &http.Client{}
 	resp, _ := client.Do(request)
+	defer resp.Body.Close()
 
 	fmt.Println(resp.Header)
 	fmt.Println(resp.StatusCode)

@@ -37,7 +37,7 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 		//fmt.Println(r.Method)
 		//fmt.Println(q)
 
-		value := app.JsonDecoder(q)
+		value := app.JSONDecoder(q)
 		fmt.Println(value)
 		// передаем в заголовок location изначальную ссылку
 		w.Header().Set("Location", value)
