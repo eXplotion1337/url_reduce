@@ -27,7 +27,7 @@ func postQuary() {
 	// контейнер данных для запроса
 	data := url.Values{}
 	// приглашение в консоли
-	//fmt.Println("Введите длинный URL")
+	fmt.Println("Введите длинный URL")
 	// открываем потоковое чтение из консоли
 	reader := bufio.NewReader(os.Stdin)
 	// читаем строку из консоли

@@ -57,15 +57,16 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 //func HelloWorld(w http.ResponseWriter, r *http.Request) {
 //	w.Write([]byte(form))
 //}
+
 var form = `<html>
     <head>
     <title></title>
     </head>
     <body>
-        <form action="/login" method="post">
-            <label>Логин</label><input type="text" name="login">
-            <label>Пароль<input type="password" name="password">
-            <input type="submit" value="Login">
+        <form action="/" method="post">
+            <label>Полный URL </label><input type="text" name="FullUrl">
+			<input type="submit" value="Login">
+            <label>Сокращенный URL</label> <output type="text" name="password">
         </form>
     </body>
 </html>`
@@ -75,39 +76,71 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	// если методом POST
 	case "POST":
-		login := r.FormValue("login")
-		password := r.FormValue("password")
-		// проверяем пароль вспомогательной функцией
-		if !Auth(login, password) {
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-			// если пароль не верен, указываем код ошибки в заголовке
-			w.WriteHeader(401)
-			// пишем в тело ответа
-			fmt.Fprintln(w, r.Method)
+		fullstr := r.FormValue("FullUrl")
+		w.WriteHeader(http.StatusCreated)
+		//fmt.Fprint(w, fullstr)
+		b, err := io.ReadAll(r.Body)
+		// обрабатываем ошибку
+		if err != nil {
+			http.Error(w, err.Error(), 500)
 			return
 		}
+		fmt.Println(b)
+		w.Write([]byte(fullstr))
+
+		// проверяем пароль вспомогательной функцией
 		// при успешной авторизации обрабатываем запрос
 		// например, передаём другому обработчику
 		//AuthorisedHandler(w, r)
 		// в остальных случаях предлагаем форму авторизации
-	default:
-		fmt.Fprint(w, form)
+	case "GET":
+		w.WriteHeader(307)
+		//w.Write([]byte(r.Method))
+
 	}
 }
 
 // Auth — вспомогательная функция авторизации
 // за пределами урока реализация может выглядеть так
-func Auth(l, p string) bool {
-	pass, ok := Logins[l]
-	return ok && p == pass
-}
 
-var Logins = make(map[string]string)
+//var Logins = make(map[string]string)
+func BodyHandlerr(w http.ResponseWriter, r *http.Request) {
+	// читаем Body
+	switch r.Method {
+	case "POST":
+		b, err := io.ReadAll(r.Body)
+		// обрабатываем ошибку
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Println(string([]byte(b)), r.Method)
+
+	case "GET":
+		q := r.URL.Query().Get("id")
+		if q == "" {
+			http.Error(w, "The query parameter is missing", http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(307)
+		fmt.Println(r.Method, q)
+	default:
+		w.WriteHeader(400)
+	}
+
+	// в нашем случае q примет значение "something"
+	// продолжаем обработку запроса
+	// ...
+	// продолжаем обработку
+	// ...
+}
 
 // Старт сервера
 func main() {
 	//маршрутизация запросов обработчику
-	http.HandleFunc("/", Login)
+	http.HandleFunc("/", BodyHandlerr)
 
 	//запуск сервера с адресом localhost, порт 8080
 	http.ListenAndServe(":8080", nil)
