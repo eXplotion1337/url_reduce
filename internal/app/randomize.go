@@ -95,7 +95,7 @@ func saveJSON(fullSrtToJSON, shortStrToJSON, id string) {
 }
 
 // JSONDecoder Функция поска полной ссылки в JSON по ID
-func JSONDecoder(idUrlToResponse string) string {
+func JSONDecoder(idURLToResponse string) string {
 	var urlToResponse string
 	rawDataIn, err := os.ReadFile(settingsFilename)
 	if err != nil {
@@ -110,7 +110,7 @@ func JSONDecoder(idUrlToResponse string) string {
 	//json.Unmarshal([]byte(settingsFilename), &settings)
 
 	for _, v := range settings.URLs {
-		if v.ID == idUrlToResponse {
+		if v.ID == idURLToResponse {
 			//fmt.Println(v.ID)
 			urlToResponse = strings.ReplaceAll(v.FullURL, "url=", "")
 		}

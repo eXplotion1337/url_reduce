@@ -99,7 +99,11 @@ func getQuary() {
 	// Создаем заголовок Location
 	request.Header.Add("Location", "string")
 	client := &http.Client{}
-	resp, _ := client.Do(request)
+	resp, err := client.Do(request)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	defer resp.Body.Close()
 
 	fmt.Println(resp.Header)
