@@ -39,7 +39,7 @@ func TestGetHandler(t *testing.T) {
 			// запускаем сервер
 			h.ServeHTTP(w, request)
 			res := w.Result()
-
+			defer res.Body.Close()
 			// проверяем код ответа
 			if res.StatusCode != tt.want.code {
 				t.Errorf("Expected status code %d, got %d", tt.want.code, w.Code)
