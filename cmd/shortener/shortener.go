@@ -32,8 +32,8 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		str := string(b)
-		long := strings.ReplaceAll(str, "1", "https://")
-		long = strings.ReplaceAll(long, "2", "/")
+		long := strings.ReplaceAll(str, "11111", "://")
+		long = strings.ReplaceAll(long, "22222", "/")
 		id := strconv.Itoa(rand.Int())
 		strURL := "http://localhost:8080/ser?id=" + id
 
@@ -66,7 +66,7 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 			//fmt.Println(r.Header)
 			w.Header().Set("Location", url)
 			fmt.Println(w.Header())
-			http.Redirect(w, r, url, 301)
+			http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 
 			//w.WriteHeader(307)
 		}

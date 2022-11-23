@@ -38,8 +38,8 @@ func postQuary() {
 	}
 	long = strings.TrimSuffix(long, "\n")
 	// заполняем контейнер данными
-	long = strings.ReplaceAll(long, "https://", "1")
-	long = strings.ReplaceAll(long, "/", "2")
+	long = strings.ReplaceAll(long, "://", "11111")
+	long = strings.ReplaceAll(long, "/", "22222")
 	data.Set("url", long)
 	// конструируем HTTP-клиент
 	client := &http.Client{}
