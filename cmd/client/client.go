@@ -38,6 +38,8 @@ func postQuary() {
 	}
 	long = strings.TrimSuffix(long, "\n")
 	// заполняем контейнер данными
+	long = strings.ReplaceAll(long, "https://", "1")
+	long = strings.ReplaceAll(long, "/", "2")
 	data.Set("url", long)
 	// конструируем HTTP-клиент
 	client := &http.Client{}
@@ -52,6 +54,7 @@ func postQuary() {
 	}
 	// в заголовках запроса сообщаем, что данные кодированы стандартной URL-схемой
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Add("Location", "application/x-www-form-urlencoded")
 	request.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 	// отправляем запрос и получаем ответ
 	response, err := client.Do(request)
@@ -70,8 +73,8 @@ func postQuary() {
 	}
 	// и печатаем его
 	ShortURL := string(body)
-	newLoad := strings.ReplaceAll(ShortURL, "url=", "")
-	fmt.Println(newLoad)
+	//newLoad := strings.ReplaceAll(ShortURL, "url=", "")
+	fmt.Println(ShortURL)
 
 }
 
@@ -90,14 +93,14 @@ func getQuary() {
 	long = strings.TrimSuffix(long, "\n")
 
 	// Отправляем запрос
-	endpoint := fmt.Sprintf("http://localhost:8080/snip?id=%s", long)
+	endpoint := fmt.Sprintf("http://localhost:8080/%s", long)
 	request, err := http.NewRequest(http.MethodGet, endpoint, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	// Создаем заголовок Location
-	request.Header.Add("Location", "string")
+	request.Header.Add("Location", endpoint)
 	client := &http.Client{}
 	resp, err := client.Do(request)
 	if err != nil {

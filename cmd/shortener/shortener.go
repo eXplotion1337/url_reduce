@@ -3,14 +3,15 @@ package main
 import (
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
+	"strconv"
 	"strings"
-	"url_reduce/internal/app"
 )
 
 type Subj struct {
-	ID  string `json:"id"`
-	URL string `json:"URL"`
+	ID      string `json:"id"`
+	longURL string `json:"URL"`
 }
 
 type JSON struct {
@@ -29,26 +30,46 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		str := string([]byte(b))
 
-		id := app.RandSeq(6) + "-" + app.RandSeq(6)
-		strURL := "url=" + app.RandSeq(6) + ".ru"
+		str := string(b)
+		long := strings.ReplaceAll(str, "1", "https://")
+		long = strings.ReplaceAll(long, "2", "/")
+		id := strconv.Itoa(rand.Int())
+		//id := app.RandSeq(6) + "-" + app.RandSeq(6)
+		strURL := "http://localhost:8080/ser?id=" + id
 
 		w.WriteHeader(http.StatusCreated)
-		fmt.Println(string([]byte(b)), r.Method, strURL)
+		//fmt.Println(string([]byte(b)), r.Method, strURL)
 
 		var settings JSON
 
 		newURL := Subj{
-			ID:  id,
-			URL: str,
+			ID:      id,
+			longURL: long,
 		}
 
 		sett.Obj = append(settings.Obj, newURL)
 
-		w.Write([]byte(str))
+		w.Write([]byte(strURL))
 
 		fmt.Println(sett.Obj)
+	//case "GET":
+	//	q := r.URL.Query().Get("/")
+	//	fmt.Println(string(q))
+	//	for _, v := range sett.Obj {
+	//		if q == v.ID {
+	//
+	//			url := strings.ReplaceAll(v.longURL, "url=", "")
+	//			//url = "https://" + url + "/"
+	//			fmt.Println(url)
+	//			w.WriteHeader(307)
+	//			w.Header().Add("Location", "text/plain; charset=utf-8")
+	//			w.Header().Set("Location", url)
+	//			//http.Redirect(w, r, url, http.StatusMovedPermanently)
+	//			//w.WriteHeader(307)
+	//
+	//		}
+	//	}
 
 	default:
 		w.WriteHeader(400)
@@ -59,11 +80,11 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 	for _, v := range sett.Obj {
 		if q == v.ID {
 
-			url := strings.ReplaceAll(v.URL, "url=", "")
-			url = "https://" + url + "/"
+			url := strings.ReplaceAll(v.longURL, "url=", "")
+			//url = "https://" + url + "/"
 			fmt.Println(url)
 			w.WriteHeader(307)
-			//w.Header().Add("Location", "url")
+			w.Header().Add("Location", "text/plain; charset=utf-8")
 			w.Header().Set("Location", url)
 			http.Redirect(w, r, url, http.StatusMovedPermanently)
 			//w.WriteHeader(307)
@@ -76,7 +97,7 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	//маршрутизация запросов обработчику
 	http.HandleFunc("/", BodyHandler)
-	http.HandleFunc("/snip", GetHandler)
+	http.HandleFunc("/ser", GetHandler)
 
 	//запуск сервера с адресом localhost, порт 8080
 	http.ListenAndServe(":8080", nil)
