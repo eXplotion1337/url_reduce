@@ -93,14 +93,15 @@ func getQuary() {
 	long = strings.TrimSuffix(long, "\n")
 
 	// Отправляем запрос
-	endpoint := fmt.Sprintf("http://localhost:8080/%s", long)
+	endpoint := fmt.Sprintf("http://localhost:8080/ser?id=%s", long)
 	request, err := http.NewRequest(http.MethodGet, endpoint, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	// Создаем заголовок Location
-	request.Header.Add("Location", endpoint)
+
+	request.Header.Add("Location", "url=")
 	client := &http.Client{}
 	resp, err := client.Do(request)
 	if err != nil {

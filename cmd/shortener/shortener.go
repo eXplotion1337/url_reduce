@@ -11,7 +11,7 @@ import (
 
 type Subj struct {
 	ID      string `json:"id"`
-	longURL string `json:"URL"`
+	LongURL string `json:"LongURL"`
 }
 
 type JSON struct {
@@ -35,17 +35,15 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 		long := strings.ReplaceAll(str, "1", "https://")
 		long = strings.ReplaceAll(long, "2", "/")
 		id := strconv.Itoa(rand.Int())
-		//id := app.RandSeq(6) + "-" + app.RandSeq(6)
 		strURL := "http://localhost:8080/ser?id=" + id
 
 		w.WriteHeader(http.StatusCreated)
-		//fmt.Println(string([]byte(b)), r.Method, strURL)
 
 		var settings JSON
 
 		newURL := Subj{
 			ID:      id,
-			longURL: long,
+			LongURL: long,
 		}
 
 		sett.Obj = append(settings.Obj, newURL)
@@ -53,23 +51,6 @@ func BodyHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(strURL))
 
 		fmt.Println(sett.Obj)
-	//case "GET":
-	//	q := r.URL.Query().Get("/")
-	//	fmt.Println(string(q))
-	//	for _, v := range sett.Obj {
-	//		if q == v.ID {
-	//
-	//			url := strings.ReplaceAll(v.longURL, "url=", "")
-	//			//url = "https://" + url + "/"
-	//			fmt.Println(url)
-	//			w.WriteHeader(307)
-	//			w.Header().Add("Location", "text/plain; charset=utf-8")
-	//			w.Header().Set("Location", url)
-	//			//http.Redirect(w, r, url, http.StatusMovedPermanently)
-	//			//w.WriteHeader(307)
-	//
-	//		}
-	//	}
 
 	default:
 		w.WriteHeader(400)
@@ -80,17 +61,17 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 	for _, v := range sett.Obj {
 		if q == v.ID {
 
-			url := strings.ReplaceAll(v.longURL, "url=", "")
-			//url = "https://" + url + "/"
-			fmt.Println(url)
-			w.WriteHeader(307)
-			w.Header().Add("Location", "text/plain; charset=utf-8")
-			w.Header().Set("Location", url)
-			http.Redirect(w, r, url, http.StatusMovedPermanently)
+			url := strings.ReplaceAll(v.LongURL, "url=", "")
 			//w.WriteHeader(307)
+			//fmt.Println(r.Header)
+			w.Header().Set("Location", url)
+			fmt.Println(w.Header())
+			http.Redirect(w, r, url, 301)
 
+			//w.WriteHeader(307)
 		}
 	}
+	w.WriteHeader(307)
 }
 
 // Старт сервера
